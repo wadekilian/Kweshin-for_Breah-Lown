@@ -23,7 +23,7 @@
             border-radius: 10px;
             cursor: pointer;
             position: absolute;
-            transition: all 0.2s ease;
+            transition: transform 0.2s ease;
         }
 
         #yesBtn {
@@ -61,7 +61,7 @@
 <button id="noBtn">no</button>
 
 <div id="result">
-    <h1>Great choice, bruv, Great choice.</h1>
+    <h1>A great choice, bruv. See you when you get back x</h1>
     <img src="Chi.jpg" alt="Chi">
 </div>
 
@@ -70,7 +70,11 @@
     const noBtn = document.getElementById("noBtn");
     const result = document.getElementById("result");
 
-    // YES BUTTON SLOWLY FOLLOWS CURSOR
+    let followSpeed = 0.04; // slightly faster start
+    let yesScale = 1;
+    let noScale = 1;
+
+    // YES button follows cursor
     document.addEventListener("mousemove", function(e) {
         let x = e.clientX;
         let y = e.clientY;
@@ -78,16 +82,14 @@
         let currentX = yesBtn.offsetLeft;
         let currentY = yesBtn.offsetTop;
 
-        let newX = currentX + (x - currentX) * 0.02;
-        let newY = currentY + (y - currentY) * 0.02;
+        let newX = currentX + (x - currentX) * followSpeed;
+        let newY = currentY + (y - currentY) * followSpeed;
 
         yesBtn.style.left = newX + "px";
         yesBtn.style.top = newY + "px";
     });
 
-    // NO BUTTON MOVES AND SHRINKS
-    let scale = 1;
-
+    // NO button runs away + shrinks + powers up YES
     noBtn.addEventListener("mouseover", function() {
         let maxX = window.innerWidth - noBtn.offsetWidth;
         let maxY = window.innerHeight - noBtn.offsetHeight;
@@ -98,11 +100,19 @@
         noBtn.style.left = randomX + "px";
         noBtn.style.top = randomY + "px";
 
-        scale *= 0.8;
-        noBtn.style.transform = "scale(" + scale + ")";
+        // Shrink NO
+        noScale *= 0.8;
+        noBtn.style.transform = "scale(" + noScale + ")";
+
+        // Grow YES
+        yesScale *= 1.15;
+        yesBtn.style.transform = "scale(" + yesScale + ")";
+
+        // Increase YES speed gradually
+        followSpeed += 0.01;
     });
 
-    // WHEN YES IS CLICKED
+    // When YES is clicked
     yesBtn.addEventListener("click", function() {
         document.querySelector("h1").style.display = "none";
         yesBtn.style.display = "none";
